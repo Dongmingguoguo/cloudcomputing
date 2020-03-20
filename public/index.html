@@ -1,0 +1,172 @@
+<!doctype html>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+
+<title>MiniProject</title>
+</head>
+
+<body>
+
+    <h1>Search Results</h1>
+
+    <lebel>
+        <input name="query" id="query" value='' type="text" />
+        <button id="search-button" onclick="keyWordsearch()" type="submit">Search</button>
+        <button id="Save" onclick="lab2()">save</button>
+        <button onclick="window.location.href = '/search.html';">Load</button>
+        <div id="container">
+            <ul id="results"></ul>
+        </div>
+    </lebel>
+
+    <iframe id="thumbnail0" src=""></iframe>
+    <h3 name="title0" id="title0">Video Title</h3>
+    <p id="description0">Video Description</p>
+    <iframe id="thumbnail1" src=""></iframe>
+    <h3 id="title1">Video Title</h3>
+    <p id="description1">Video Description</p>
+    <iframe id="thumbnail2" src=""></iframe>
+    <h3 id="title2">Video Title</h3>
+    <p id="description2">Video Description</p>
+    <iframe id="thumbnail3" src=""></iframe>
+    <h3 id="title3">Video Title</h3>
+    <p id="description3">Video Description</p>
+
+
+
+
+    <script>
+        var i = 0;
+
+        function click() {
+            i = i + 1;
+            getVideo();
+        }
+
+        function keyWordsearch() {
+            gapi.client.setApiKey("AIzaSyAEcHvQ4GqqRlw9ejO7LsO_lMF-_Q7iwJE");
+            gapi.client.load('youtube', 'v3', function() {
+                getVideo();
+            });
+        }
+
+        function lab1(data) {
+            data = JSON.stringify(data);
+
+            $.ajax({
+                url: '/',
+                type: 'POST',
+                data: data
+            });
+        }
+
+        function lab2() {
+            var q = $('#query').val();
+            $.ajax({
+                type: 'GET',
+                url: 'https://www.googleapis.com/youtube/v3/search',
+                data: {
+                    key: 'AIzaSyAEcHvQ4GqqRlw9ejO7LsO_lMF-_Q7iwJE',
+                    q: q,
+                    part: 'snippet',
+                    maxResults: 10,
+                    type: 'video',
+                    videoEmbeddable: true,
+                },
+                success: function(data) {
+                    a = JSON.stringify(data.items[1]);
+                    console.log(a);
+                    for (var i = 0; i < 4; i++) {
+                        dd = {
+                            keyword: q,
+                            title_id: data.items[i].id.videoId,
+                            title: data.items[i].snippet.title,
+                            description: data.items[i].snippet.description,
+                            url: data.items[i].id.videoId,
+                        }
+                        lab1(dd)
+                    }
+                },
+                error: function(response) {
+                    console.log("Request Failed");
+                }
+            });
+        }
+
+
+
+        // function makeRequest(){
+        //     var q = $('#query').val();
+        // var request = gapi.client.youtube.search.list({
+        //         q: q,
+        //         part: 'snippet',
+        //         maxResults: 10,
+        //         type: 'video',
+        //         videoEmbeddable: true,
+        // });
+        function getVideo() {
+            var q = $('#query').val();
+
+            $.ajax({
+                type: 'GET',
+                url: 'https://www.googleapis.com/youtube/v3/search',
+                data: {
+                    key: 'AIzaSyAEcHvQ4GqqRlw9ejO7LsO_lMF-_Q7iwJE',
+                    q: q,
+                    part: 'snippet',
+                    maxResults: 10,
+                    type: 'video',
+                    videoEmbeddable: true,
+                },
+                success: function(data) {
+
+                    var str = data.items[1].snippet.description;
+                    var n = str.length;
+                    console.log(str);
+                    embedVideo(data)
+                },
+                error: function(response) {
+                    console.log("Request Failed");
+                }
+            });
+        }
+
+        function embedVideo(data) {
+            for (var i = 0; i < 5; i++) {
+                document.getElementById('thumbnail' + i).setAttribute('src', 'https://www.youtube.com/embed/' + data.items[i].id.videoId);
+                document.getElementById('title' + i).innerHTML = data.items[i].snippet.title;
+                document.getElementById('description' + i).innerHTML = data.items[i].snippet.description;
+
+                window.source += ['https://www.youtube.com/embed/' + data.items[i].id.videoId] + " | ";
+                window.title += [data.items[i].snippet.title] + " | ";
+                window.description += [data.items[i].snippet.description] + " | ";
+            }
+        }
+
+        function SAVE() {
+            var MongoClient = require('mongodb').MongoClient;
+            var url = "mongodb://localhost:27017/";
+            alert(window.title);
+            MongoClient.connect(url, function(err, db) {
+                if (err) throw err;
+                var dbo = db.db("video");
+                for (var i = 0; i < 5; i++) {
+
+                    dbo.collection("videoInfos").insertOne(window.title, function(err, res) {
+                        if (err) throw err;
+                        console.log("1 document inserted");
+                        db.close();
+                    });
+                    alert(window.title);
+                }
+
+            });
+        }
+    </script>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script src="https://apis.google.com/js/client.js?onload=googleApiClientReady">
+    </script>
+</body>
+
+</html>

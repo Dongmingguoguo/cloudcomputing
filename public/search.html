@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>MiniProject</title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script src="https://apis.google.com/js/client.js?onload=googleApiClientReady">
+    </script>
+</head>
+
+<body>
+    <div id="buttons">
+        <label>
+            <button id="search-button"  onclick="dsp()">View History</button>
+        </label>
+        <div id="container">
+            <h1>Search History</h1>
+            <ul id="results"></ul>
+        </div>
+
+        <div>
+            <ul id="sec" style="list-style: none;">
+
+            </ul>
+        </div>
+    </div>
+    <script>
+        function dsp() {
+            $.ajax({
+                type: 'GET',
+                url: '/history',
+                dataType: 'json',
+                success: function(result) {
+                    for (var i = 0; i < result.length; i++) {
+
+                        var add1 = 'http://www.youtube.com/watch/?v=' + result[i].url;
+                        console.log(add1)
+
+
+                        $('#sec').append('<li><a style="font-size: 14px; color: black" href=' + '"' + add1 + '"' + '>' +
+                            "\t&nbsp\t&nbsp\t&nbsp\t&nbsp\t&nbsp" +
+                            result[i].keyword +
+                            "\t&nbsp\t&nbsp\t&nbsp\t&nbsp\t&nbsp" +
+                            "\t&nbsp\t&nbsp\t&nbsp\t&nbsp\t&nbsp" +
+                            "\t&nbsp\t&nbsp\t&nbsp\t&nbsp\t&nbsp" +
+                            "\t&nbsp\t&nbsp\t&nbsp\t&nbsp\t&nbsp" +
+                            "\t&nbsp\t&nbsp\t&nbsp\t&nbsp\t&nbsp" +
+                            "\t&nbsp\t&nbsp\t&nbsp\t&nbsp\t&nbsp" +
+                            "\t&nbsp" +
+                            "\t&nbsp\t&nbsp\t&nbsp\t&nbsp" +
+                            result[i].title_id +
+                            "\t&nbsp\t&nbsp\t&nbsp\t&nbsp\t&nbsp" +
+                            "\t&nbsp\t&nbsp\t&nbsp\t&nbsp\t&nbsp" +
+                            "\t&nbsp\t&nbsp\t&nbsp\t&nbsp\t&nbsp" +
+                            "\t&nbsp\t&nbsp\t&nbsp\t&nbsp\t&nbsp" +
+                            "\t&nbsp\t&nbsp\t&nbsp\t&nbsp\t&nbsp" +
+                            "\t&nbsp\t&nbsp\t&nbsp\t&nbsp\t&nbsp" +
+                            result[i].title +
+                            "\t&nbsp\t&nbsp\t&nbsp\t&nbsp\t&nbsp" +
+                            "\t&nbsp\t&nbsp\t&nbsp\t&nbsp\t&nbsp" +
+                            "\t&nbsp\t&nbsp\t&nbsp\t&nbsp\t&nbsp" +
+                            "\t&nbsp\t&nbsp\t&nbsp\t&nbsp\t&nbsp" +
+                            "\t&nbsp\t&nbsp\t&nbsp\t&nbsp\t&nbsp" +
+                            "\t&nbsp\t&nbsp\t&nbsp\t&nbsp\t&nbsp" +
+                            result[i].url +
+                            "<hr style='border: 1px solid #CCCCCC; '>" + '</a></li> ');
+                    }
+                }
+            })
+        }
+    </script>
+
+</body>
+
+</html>
